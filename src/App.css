@@ -1,38 +1,141 @@
 .App {
+  font-family: 'Oswald', sans-serif;
+}
+
+
+.main-content { /* 메인 바디 */
+  min-height: 90vh;
+  display: flex;
+  font-family: 'Oswald', sans-serif;
+  justify-content: start; /* 컨텐츠를 왼쪽으로 정렬 */
+  align-items: center;
+  background: linear-gradient(to right, #f4f6f9, #eef1f5);
+  padding: 50px 0;
+}
+
+.navbar {
+  top: 0; /* 상단에 위치 */
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  left: 0; /* 왼쪽에 위치 */
+  right: 0; /* 오른쪽에 위치 */
+  z-index: 1000; /* 다른 요소들 위에 표시되도록 설정 */
+}
+
+/*폰트 설정(추가)*/
+.do-hyeon-font {
+  font-family: 'Do Hyeon', sans-serif; /* Do Hyeon 폰트 적용 */
+  font-size: 30px; /* 원하는 폰트 크기로 설정 */
+  text-align: center; /* 중앙 정렬 */
+  margin: 0; /* 기본 여백 제거 */
+  color: 	#3CB371;
+}
+
+.korean-font{
+  font-family: 'Do Hyeon', sans-serif; /* Do Hyeon 폰트 적용 */
+  font-size: 18px; /* 원하는 폰트 크기로 설정 */
+  text-align: center; /* 중앙 정렬 */
+  margin: 0; /* 기본 여백 제거 */
+  color: 	#000000;
+}
+
+/* 로그인 */
+.login-section {
+  top: 150px; /* 화면 상단에서의 거리 */
+  left: 70px; /* 화면 왼쪽에서의 거리 */
+  width: 250px; /* 너비 설정 */
+  padding: 20px;
+  background: white; /* 배경색 추가 */
+  border: 1px solid #dcdcdc; /* 테두리 추가 */
+  border-radius: 5px; /* 둥근 모서리 */
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+}
+
+.login-section h3 {
+  font-weight: bold;
+}
+
+.login-section .form-control {
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+/* 구분선 */
+.divider {
+  border-left: 2px solid #dcdcdc;
+  height: 600px;
+  margin-left: 20px;
+}
+
+/* footer */
+.footer {
+  background-color: #f8f9fa;
+  padding: 15px 0;
+  text-align: center;
+  border-top: 1px solid #dcdcdc;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.footer p {
+  margin: 0;
+  font-weight: bold;
+  color: #000000;
+}
+
+/*회원가입 버튼 커스텀*/
+.custom-signup-button {
+  color: #007bff; /* 파란색 글자 */
+  border: 2px solid #007bff; /* 파란색 테두리 */
+  background-color: transparent; /* 배경 투명 */
+  border-radius: 5px; /* 버튼의 둥근 모서리 */
+  padding: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-signup-button:hover {
+  background-color: #007bff; /* 호버 시 배경 파란색 */
+  color: white; /* 호버 시 글자 흰색 */
+}
+
+/*메인화면 광고*/
+.ad-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 네모 크기를 텍스트에 맞춤 */
+  gap: 20px; /* 각 아이템 간의 간격 */
+  margin: 20px auto; /* 중앙 정렬 */
+  padding: 10px;
+}
+
+.ad-box {
+  background-color: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Do+Hyeon', sans-serif;
+  font-size: 16px;
+}
+
+.ad-box p {
+  margin: 0;
+  line-height: 1.5;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px); /* 아래에서 위로 올라오는 효과 */
+  animation: fadeIn 1s forwards; /* 애니메이션 설정 */
+  animation-delay: 0.5s; /* 애니메이션 지연 */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
+@keyframes fadeIn {
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0); /* 원래 위치로 돌아오는 효과 */
   }
 }
