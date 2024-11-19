@@ -64,18 +64,19 @@ function HomePage({ setIsLoggedIn }) {
         throw new Error(`서버 응답 오류: ${response.status}`);
       }
 
-      // 응답 처리
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         const result = await response.json();
         console.log('로그인 성공(JSON):', result);
         alert(result.message || '로그인 성공!');
-        setIsLoggedIn(true); // 로그인 성공 시 로그인 상태 변경
+        setIsLoggedIn(true); // 로그인 상태 변경
+        localStorage.setItem('username', username); // 유저네임 저장
       } else {
         const textResult = await response.text();
         console.log('로그인 성공(텍스트):', textResult);
         alert(textResult || '로그인 성공!');
-        setIsLoggedIn(true); // 로그인 성공 시 로그인 상태 변경
+        setIsLoggedIn(true); // 로그인 상태 변경
+        localStorage.setItem('username', username); // 유저네임 저장
       }
     } catch (error) {
       console.error('로그인 실패:', error);

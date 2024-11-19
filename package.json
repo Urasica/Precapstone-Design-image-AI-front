@@ -51,5 +51,9 @@
   "proxy": "http://localhost:8080",
   "devServer": {
     "allowedHosts": "all"
+  },
+  "devDependencies": {
+    "webpack": "^5.96.1",
+    "webpack-dev-server": "^5.1.0"
   }
 }
