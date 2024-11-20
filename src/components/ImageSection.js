@@ -14,6 +14,7 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
   const [imageErrorMessage, setImageErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [recentImages, setRecentImages] = useState([]);
+  const [selectedImagePath, setSelectedImagePath] = useState(''); // 이미지 경로만 저장
 
   const userName = localStorage.getItem('username');
   const draggableRef = useRef(null); 
@@ -29,11 +30,11 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
         method: 'GET',
         headers: { Accept: '*/*' },
       });
-  
+
       if (!response.ok) {
         throw new Error('최근 이미지를 가져오는 중 오류가 발생했습니다.');
       }
-  
+
       const recentData = await response.json();
       const images = recentData.slice(0, 10).map((item) => ({
         base64Image: `data:image/jpeg;base64,${item.base64Image}`,
@@ -95,8 +96,13 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
   
       const data = await response.json();
       const base64Image = `data:image/jpeg;base64,${data.image}`;
-      setSelectedImage(base64Image); 
-
+      setSelectedImage(base64Image);
+  
+      // 생성된 이미지 경로를 설정
+      const imageId = data.imageId; // 서버에서 반환된 이미지 ID
+      const imagePath = `/upload/image_${imageId}.jpg`; // 경로를 저장
+      setSelectedImagePath(imagePath); // 경로 저장
+  
       setRecentImages(prevImages => [
         { base64Image, genAt: new Date().toISOString() }, 
         ...prevImages,
@@ -111,6 +117,13 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
       setLoading(false);
     }
   };
+  
+  const handleRecentImageSelect = (image) => {
+    // 최근 이미지 선택 시 경로도 함께 설정
+    setSelectedImage(image.base64Image);
+    const imagePath = `/upload/image_${image.genAt}.jpg`;  // 해당 이미지 경로 설정
+    setSelectedImagePath(imagePath);
+  };  
 
   return (
     <Card
@@ -215,7 +228,6 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
           </Radio.Group>
         </Col>
       </Row>
-
       <Row>
         <Col span={24}>
           <Button type="primary" block style={{ marginTop: 20 }} onClick={sendAllData}>
@@ -226,5 +238,4 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
     </Card>
   );
 };
-
 export default ImageSection;

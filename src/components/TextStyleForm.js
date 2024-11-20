@@ -19,12 +19,10 @@ const TextStyleForm = ({
   errorMessage,
   imageErrorMessage,
 }) => {
-
-  // 텍스트 그림자 제거 함수
   const handleRemoveTextShadow = () => {
-    setTextShadowColor('#000000'); // 기본값으로 설정 (예: 검정색)
+    setTextShadowColor('#000000');
   };
-
+  
   return (
     <div
       style={{
@@ -142,5 +140,4 @@ const TextStyleForm = ({
     </div>
   );
 };
-
 export default TextStyleForm;

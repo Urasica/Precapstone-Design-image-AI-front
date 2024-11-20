@@ -7,7 +7,6 @@ import MessageInput from './components/MessageInput';
 import ImageSection from './components/ImageSection';
 
 const { Content } = Layout;
-let imagePath = "";
 
 const MessageMain = () => {
   const [senderNumber, setSenderNumber] = useState('');
@@ -17,58 +16,67 @@ const MessageMain = () => {
   const [imageText, setImageText] = useState('');
   const [recentImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState('');
-  
+  const [selectedImagePath, setSelectedImagePath] = useState(''); // 이미지 경로 저장 변수 추가
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => setSelectedImage(reader.result);
+    reader.onload = () => {
+      setSelectedImage(reader.result); // 이미지 파일을 base64로 저장
+      setSelectedImagePath(file.name); // 선택된 이미지 파일의 경로를 저장
+    };
     reader.readAsDataURL(file);
   };
-// MessageMain 컴포넌트
-const sendAllData = async () => {
-  try {
 
-    const sanitizedSenderNumber = senderNumber.replace(/-/g, '');
-    const sanitizedReceiverNumbers = receiverNumbers.replace(/-/g, '');
+  const sendAllData = async () => {
+    try {
+      // 전화번호 포맷 정리
+      const sanitizedSenderNumber = senderNumber.replace(/-/g, '');
+      const sanitizedReceiverNumbers = receiverNumbers.replace(/-/g, '');
 
-    console.log('전송할 데이터 확인:');
-    console.log('Sender Number:', sanitizedSenderNumber);
-    console.log('Receiver Numbers:', sanitizedReceiverNumbers);
-    console.log('Message Content:', messageContent);
-    console.log('Prompt:', prompt);
-    console.log('Image Text:', imageText);
-    console.log('Selected Image:', selectedImage);
-    console.log("Image Path:", selectedImage); // imagePath를 사용
+      console.log('전송할 데이터 확인:');
+      console.log('Sender Number:', sanitizedSenderNumber);
+      console.log('Receiver Numbers:', sanitizedReceiverNumbers);
+      console.log('Message Content:', messageContent);
+      console.log('Prompt:', prompt);
+      console.log('Image Text:', imageText);
+      console.log('Selected Image:', selectedImage); // base64 이미지 데이터
+      console.log('Selected Image Path:', selectedImagePath); // 선택된 이미지의 경로
 
-    const dataToSend = {
-      content: messageContent,
-      path: selectedImage ? selectedImage.split('http://')[1] : '',
-      fromPhoneNumber: sanitizedSenderNumber,
-      toPhoneNumber: sanitizedReceiverNumbers,
-    };
-    console.log("전달할 데이터", dataToSend);
-    if (imageText) {
-      dataToSend.imageText = imageText; 
+      const dataToSend = {
+        content: messageContent,
+        path: selectedImagePath, // 경로 사용
+        fromPhoneNumber: sanitizedSenderNumber,
+        toPhoneNumber: sanitizedReceiverNumbers,
+      };
+
+      if (!selectedImagePath) {
+        console.error('선택된 이미지 경로가 없습니다. path 값이 비어있습니다.');
+        message.error('이미지 경로가 비어있습니다. 경로를 확인해주세요.');
+        return;
+      }
+       
+      if (imageText) {
+        dataToSend.imageText = imageText;
+      }
+
+      console.log('전달할 데이터:', dataToSend);
+
+      // 서버로 데이터 전송
+      const response = await axios.post('http://3.35.137.214:8080/api/send', dataToSend);
+
+      message.success('모든 정보를 성공적으로 전송했습니다.');
+      console.log('서버 응답:', response.data);
+    } catch (error) {
+      console.error('전송 실패:', error);
+      if (error.response) {
+        console.error('서버 에러 응답:', error.response.data);
+      }
+      message.error('전송에 실패했습니다.');
     }
-
-    console.log(dataToSend);
-
-    // 서버로 요청 전송
-    const response = await axios.post('http://3.35.137.214:8080/api/send', dataToSend);
-
-    message.success('모든 정보를 성공적으로 전송했습니다.');
-    console.log('서버 응답:', response.data);
-  } catch (error) {
-    console.error('전송 실패:', error);
-    if (error.response) {
-      console.error('서버 에러 응답:', error.response.data);
-    }
-    message.error('전송에 실패했습니다.');
-  }
-};
+  };
 
   return (
     <Layout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
@@ -91,7 +99,6 @@ const sendAllData = async () => {
               imageText={imageText}
               setImageText={setImageText}
               setSelectedImage={setSelectedImage}
-              
             />
           </Col>
           <Col xs={24} sm={12} md={15}>
@@ -102,7 +109,6 @@ const sendAllData = async () => {
               sendAllData={sendAllData}
               imageText={imageText}
               setImageText={setImageText}
-
             />
           </Col>
         </Row>
