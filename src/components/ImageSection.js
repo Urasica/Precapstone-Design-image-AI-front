@@ -119,13 +119,13 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
         const data = await response.json();
         const { imageUrl, image } = data;
 
-        setSelectedImage(`data:image/jpeg;base64,${image}`);
+        // 서버에서 받은 이미지 URL을 저장 (선택된 이미지는 갱신하지 않음)
         sessionStorage.setItem('uploadedImagePath', imageUrl);
 
         message.success('이미지가 성공적으로 업로드되었습니다.');
 
         if (window.refresh) {
-          window.refresh();
+          window.refresh();  // 최신 이미지를 불러오기 위해 최근 이미지 목록 갱신
         }
       } catch (error) {
         console.error('서버 업로드 중 오류:', error);
