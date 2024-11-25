@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, message } from 'antd';
+import {refresh} from './ImageSection';
 
 const { TextArea } = Input;
 
@@ -23,6 +24,12 @@ const generateImage = async () => {
     return;
   }
 
+  const refreshImages = () => {
+    if (window.refresh) {
+      window.refresh();
+    }
+  };
+
   try {
     const requestData = {
       userName: userName,
@@ -30,6 +37,7 @@ const generateImage = async () => {
       prompt: prompt,
     };
 
+    // 서버 변경 필요
     const response = await fetch("http://3.35.137.214:8080/images/generate", {
       method: 'POST',
       headers: {
@@ -37,6 +45,8 @@ const generateImage = async () => {
       },
       body: JSON.stringify(requestData),
     });
+
+    console.log(requestData);
 
     if (!response.ok) {
       throw new Error('네트워크 응답이 올바르지 않습니다.');
@@ -46,11 +56,14 @@ const generateImage = async () => {
     const image = `data:image/jpeg;base64,${data.image}`;
     setSelectedImage(image); // selectedImage 상태를 업데이트
 
-    const imagePath = `http://${data.imageUrl}`; // 이미지 URL
+    const imagePath = data.imageUrl; // 이미지 URL
     console.log('이미지 URL:', imagePath);
+
+    sessionStorage.setItem("selectedImagePath", imagePath);
 
     if (loadingMessageShown) {
       message.success('이미지가 성공적으로 표시되었습니다.');
+      refreshImages(); //최근 이미지 불러오는 함수
     }
   } catch (error) {
     if (loadingMessageShown) {
@@ -64,7 +77,7 @@ const generateImage = async () => {
 };
 
   return (
-    <Card title="메세지 입력" bordered={true} style={{ borderRadius: 10, margin: '10px' }} className="korean-font">
+    <Card title="메세지 입력" bordered={true} style={{ borderRadius: 10, margin: '10px' ,marginTop: '-30px'}} className="korean-font">
       <Form layout="vertical">
         <Form.Item label={<span className="korean-font">메세지 입력</span>}>
           <TextArea
@@ -82,7 +95,7 @@ const generateImage = async () => {
             onChange={(e) => setPrompt(e.target.value)}
           />
         </Form.Item>
-        <Button type="primary" block style={{ marginBottom: 20 }} onClick={generateImage} loading={loading}>
+        <Button type="primary" block style={{ marginBottom: 20}} onClick={generateImage} loading={loading}>
           생성
         </Button>
       </Form>

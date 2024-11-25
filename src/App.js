@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar, Nav, Container, Form, Button, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import MessageMain from './MessageMain';
 import Signup from './Signup';
 import './App.css';
@@ -44,6 +45,7 @@ function App() {
 function HomePage({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // useNavigate 추가
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -69,15 +71,15 @@ function HomePage({ setIsLoggedIn }) {
         const result = await response.json();
         console.log('로그인 성공(JSON):', result);
         alert(result.message || '로그인 성공!');
-        setIsLoggedIn(true); // 로그인 상태 변경
-        localStorage.setItem('username', username); // 유저네임 저장
       } else {
         const textResult = await response.text();
         console.log('로그인 성공(텍스트):', textResult);
         alert(textResult || '로그인 성공!');
-        setIsLoggedIn(true); // 로그인 상태 변경
-        localStorage.setItem('username', username); // 유저네임 저장
       }
+
+      setIsLoggedIn(true); // 로그인 상태 변경
+      localStorage.setItem('username', username); // 유저네임 저장
+      navigate('/MessageMain'); // 로그인 성공 후 MessageMain으로 이동
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인 실패! 아이디와 비밀번호를 확인하세요.');

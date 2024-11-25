@@ -1,7 +1,5 @@
-import React from 'react';
-import { Row, Col, Form, Input, Button, Select } from 'antd';
-
-const { Option } = Select;
+import React, { useState } from 'react';
+import { Row, Col, Form, Input, Button, Slider } from 'antd';
 
 const TextStyleForm = ({
   imageTextInput,
@@ -22,7 +20,7 @@ const TextStyleForm = ({
   const handleRemoveTextShadow = () => {
     setTextShadowColor('#000000');
   };
-  
+
   return (
     <div
       style={{
@@ -39,33 +37,41 @@ const TextStyleForm = ({
       </h5>
 
       <Form.Item label={<span className="korean-font">텍스트 입력</span>}>
-        <Input
+        <Input.TextArea
           placeholder="텍스트 입력"
           value={imageTextInput}
           onChange={(e) => setImageTextInput(e.target.value)}
-          style={{ width: '100%' }}
+          style={{
+            width: '100%',
+            resize: 'none', // 사용자가 크기를 조정할 수 없게 설정
+            whiteSpace: 'pre-line', // 줄바꿈이 스타일 적용 시 반영되게 설정
+          }}
+          rows={4} // 기본적으로 4줄 표시
         />
       </Form.Item>
 
       <Row gutter={16}>
         <Col span={8}>
           <label className="korean-font" style={{ display: 'flex', alignItems: 'center' }}>
-            텍스트:
+            폰트 크기:
           </label>
         </Col>
         <Col span={16}>
-          <Select
-            value={fontSize}
-            onChange={setFontSize}
-            style={{ width: '100%' }}
-            placeholder="폰트 크기"
-          >
-            <Option value={9}>9px</Option>
-            <Option value={12}>12px</Option>
-            <Option value={16}>16px</Option>
-            <Option value={20}>20px</Option>
-            <Option value={24}>24px</Option>
-          </Select>
+          <Row gutter={8}>
+            <Col span={16}>
+              <Slider min={8} max={72} value={fontSize} onChange={setFontSize} />
+            </Col>
+            <Col span={8}>
+              <Input
+                type="number"
+                value={fontSize}
+                onChange={(e) => setFontSize(Number(e.target.value))}
+                min={8}
+                max={72}
+                style={{ width: '100%' }}
+              />
+            </Col>
+          </Row>
         </Col>
       </Row>
 
@@ -91,7 +97,7 @@ const TextStyleForm = ({
             텍스트 편집:
           </label>
         </Col>
-        <Col span={16}>
+        <Col span={12}>
           <Input
             type="color"
             value={textShadowColor}
@@ -105,7 +111,7 @@ const TextStyleForm = ({
           </Button>
         </Col>
       </Row>
-      
+
       <Row gutter={16} style={{ marginTop: '10px' }}>
         <Col span={8}>
           <label className="korean-font" style={{ display: 'flex', alignItems: 'center' }}>
@@ -140,4 +146,5 @@ const TextStyleForm = ({
     </div>
   );
 };
+
 export default TextStyleForm;

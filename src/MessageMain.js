@@ -10,49 +10,29 @@ const { Content } = Layout;
 
 const MessageMain = () => {
   const [senderNumber, setSenderNumber] = useState('');
-  const [receiverNumbers, setReceiverNumbers] = useState('');
+  const [receiverNumbers, setReceiverNumbers] = useState([]);
   const [messageContent, setMessageContent] = useState('');
   const [prompt, setPrompt] = useState('');
   const [imageText, setImageText] = useState('');
   const [recentImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedImagePath, setSelectedImagePath] = useState(''); // 이미지 경로 저장 변수 추가
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result); // 이미지 파일을 base64로 저장
-      setSelectedImagePath(file.name); // 선택된 이미지 파일의 경로를 저장
-    };
-    reader.readAsDataURL(file);
-  };
+  const savedImagePath = sessionStorage.getItem("selectedImagePath");
 
   const sendAllData = async () => {
     try {
       // 전화번호 포맷 정리
       const sanitizedSenderNumber = senderNumber.replace(/-/g, '');
-      const sanitizedReceiverNumbers = receiverNumbers.replace(/-/g, '');
-
-      console.log('전송할 데이터 확인:');
-      console.log('Sender Number:', sanitizedSenderNumber);
-      console.log('Receiver Numbers:', sanitizedReceiverNumbers);
-      console.log('Message Content:', messageContent);
-      console.log('Prompt:', prompt);
-      console.log('Image Text:', imageText);
-      console.log('Selected Image:', selectedImage); // base64 이미지 데이터
-      console.log('Selected Image Path:', selectedImagePath); // 선택된 이미지의 경로
+      const sanitizedReceiverNumbers = receiverNumbers.map((num) => num.replace(/-/g, ''));
 
       const dataToSend = {
         content: messageContent,
-        path: selectedImagePath, // 경로 사용
+        path: savedImagePath, // 경로 사용
         fromPhoneNumber: sanitizedSenderNumber,
-        toPhoneNumber: sanitizedReceiverNumbers,
+        toPhoneNumbers: sanitizedReceiverNumbers, // 배열로 처리
       };
+      console.log("서버가 문자 보낼 데이터",dataToSend);
 
-      if (!selectedImagePath) {
+      if (!savedImagePath) {
         console.error('선택된 이미지 경로가 없습니다. path 값이 비어있습니다.');
         message.error('이미지 경로가 비어있습니다. 경로를 확인해주세요.');
         return;
