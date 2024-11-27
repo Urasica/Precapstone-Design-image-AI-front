@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f0f2f5; /* 전체 배경색 */
+  background-color: #f0f2f5;
 }
 
 .ant-layout {
@@ -13,8 +13,8 @@ body {
 }
 
 .signup-layout {
-  margin-top: 0; /* 위쪽 여백 제거 */
-  background-color: #f0f2f5; /* 전체 배경과 동일한 색으로 설정 */
+  margin-top: 0; 
+  background-color: #f0f2f5; 
   background-size: cover;
   background-position: center;
   height: 80vh; 
@@ -24,13 +24,13 @@ body {
 }
 
 .signup-container {
-  background: rgba(255, 255, 255, 0.9); /* 흰색 배경과 투명도 */
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
   padding: 40px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
-  width: 400px; /* 너비 조정 */
-  animation: fadeIn 0.5s; /* 애니메이션 효과 */
-  margin-top: 20px; /* 컨테이너의 위쪽 여백 추가 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+  width: 400px; 
+  animation: fadeIn 0.5s; 
+  margin-top: 20px; 
 }
 
 .signup-title {
@@ -39,14 +39,14 @@ body {
 }
 
 .signup-button {
-  width: 100%; /* 버튼을 가득 채우기 */
+  width: 100%; 
 }
 
 .title-font {
-  font-family: 'Do Hyeon', sans-serif; /* Do Hyeon 폰트 적용 */
-  font-size: 35px; /* 원하는 폰트 크기로 설정 */
-  text-align: center; /* 중앙 정렬 */
-  margin: 0; /* 기본 여백 제거 */
+  font-family: 'Do Hyeon', sans-serif; 
+  font-size: 35px; 
+  text-align: center;
+  margin: 0; 
   color: #3CB371;
 }
 

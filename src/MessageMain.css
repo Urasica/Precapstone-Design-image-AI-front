@@ -1,4 +1,4 @@
-/* 전체 컨테이너 설정 */
+
 .container {
   width: 100%;
   max-width: 100%;
@@ -6,27 +6,23 @@
   padding: 0 10px;
 }
 
-/* 플렉스 정렬로 레이아웃 구성 */
 .row {
   display: flex;
-  flex-wrap: wrap; /* 넘치면 줄바꿈 */
-  justify-content: space-evenly; /* 항목 간의 간격 고르게 */
+  flex-wrap: wrap; 
+  justify-content: space-evenly; 
   margin-bottom: 20px;
-  gap: 15px; /* 각 아이템 사이의 간격 */
+  gap: 15px; 
 }
 
-/* 공통 여백 */
 .form-group {
   margin-bottom: 15px;
 }
 
-/* 제목 스타일 */
 h5 {
   margin-bottom: 15px;
   font-weight: bold;
 }
 
-/* 여백 클래스 */
 .mt-2 {
   margin-top: 10px;
 }
@@ -35,11 +31,10 @@ h5 {
   margin-top: 15px;
 }
 
-/* 이미지 디스플레이 스타일 */
 .image-display {
-  flex: 1 1 calc(25% - 20px); /* 4개의 열로 구성 */
-  min-width: 200px; /* 최소 너비 보장 */
-  max-width: 300px; /* 최대 너비 설정 */
+  flex: 1 1 calc(25% - 20px); 
+  min-width: 200px; 
+  max-width: 300px; 
   border: 1px solid #ccc;
   padding: 10px;
   height: 300px;
@@ -53,17 +48,15 @@ h5 {
 }
 
 .image-display:hover {
-  transform: translateY(-5px); /* 호버 시 살짝 떠오르는 효과 */
+  transform: translateY(-5px); 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* 라디오 이미지 스타일 */
 .radio-image {
   display: flex;
   align-items: center;
 }
 
-/* 폰트 스타일 */
 .do-hyeon-font {
   font-family: 'Do Hyeon', sans-serif;
   font-size: 18px;
@@ -72,43 +65,41 @@ h5 {
   color: #000000;
 }
 
-/* 라디오 이미지 내부 이미지 */
 .radio-image img {
   width: 50px;
   height: auto;
   margin-right: 10px;
 }
 
-/* 반응형 미디어 쿼리 */
 @media screen and (max-width: 768px) {
   .image-display {
-    flex: 1 1 calc(50% - 15px); /* 화면이 작아지면 2열로 구성 */
-    min-width: 150px; /* 최소 너비 축소 */
-    max-width: 250px; /* 최대 너비 축소 */
-    height: 250px; /* 높이 축소 */
+    flex: 1 1 calc(50% - 15px); 
+    min-width: 150px; 
+    max-width: 250px; 
+    height: 250px; 
   }
 
   .do-hyeon-font {
-    font-size: 16px; /* 작은 화면에서는 폰트 크기 줄임 */
+    font-size: 16px; 
   }
 
   .row {
-    gap: 10px; /* 작은 화면에서 간격 축소 */
+    gap: 10px; 
   }
 }
 
 @media screen and (max-width: 480px) {
   .image-display {
-    flex: 1 1 100%; /* 한 열로 표시 */
-    height: 200px; /* 높이 축소 */
+    flex: 1 1 100%; 
+    height: 200px; 
   }
 
   .radio-image img {
-    width: 40px; /* 작은 화면에서 이미지 크기 축소 */
+    width: 40px;
     margin-right: 8px;
   }
 
   .do-hyeon-font {
-    font-size: 14px; /* 더 작은 화면에서 폰트 크기 축소 */
+    font-size: 14px; 
   }
 }

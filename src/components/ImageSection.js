@@ -12,6 +12,7 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
   const [textShadowColor, setTextShadowColor] = useState('#000000');
   const [isTextApplied, setIsTextApplied] = useState(false);
   const [recentImages, setRecentImages] = useState([]);
+  const [backgroundOpacity, setBackgroundOpacity] = useState(1.0);
   const userName = localStorage.getItem('username');
   const draggableRef = useRef(null);
   const imageContainerRef = useRef(null);
@@ -22,7 +23,7 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
       return;
     }
     try {
-      const response = await fetch(`http://3.35.137.214:8080/images/recent?userName=${encodeURIComponent(userName)}`, {
+      const response = await fetch(`http://34.47.70.206:8080/images/recent?userName=${encodeURIComponent(userName)}`, {
         method: 'GET',
         headers: { Accept: '*/*' },
       });
@@ -38,6 +39,8 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
         genAt: item.genAt,
       }));
       setRecentImages(images);
+      sessionStorage.setItem("selectedImagePath", images[0].imageUrl);
+      console.log(sessionStorage.getItem("selectedImagePath"));
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +65,7 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
     };
   }, []);
 
-  const handleRemoveBackground = () => setBackgroundColor('transparent');
+  const handleRemoveBackground = () => setBackgroundOpacity('0');
 
   const applyTextStyle = () => {
     if (imageTextInput.trim() === '') {
@@ -79,60 +82,105 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
   };
 
   const uploadImageToServer = async () => {
+    setImageTextInput('');
     if (imageContainerRef.current) {
-      try {
-        // 캡처 시작
-        const canvas = await html2canvas(imageContainerRef.current, {
-          backgroundColor: null,
-        });
+        try {
+            // 캡처 시작
+            const canvas = await html2canvas(imageContainerRef.current, {
+                backgroundColor: null
+            });
 
-        // 캡처된 이미지를 크롭
-        const croppedCanvas = document.createElement('canvas');
-        const cropWidth = canvas.width - 20; // 좌우 여백 제거
-        const cropHeight = canvas.height;
-        croppedCanvas.width = cropWidth;
-        croppedCanvas.height = cropHeight;
+            // 원본 크기를 그대로 가져옴
+            const originalWidth = canvas.width;
+            const originalHeight = canvas.height;
 
-        const ctx = croppedCanvas.getContext('2d');
-        ctx.drawImage(canvas, 10, 0, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+            // 512x512 크기의 캔버스 생성 (목표 크기 설정)
+            const targetSize = 512;
+            const aspectRatio = originalWidth / originalHeight;
 
-        const base64ImageData = croppedCanvas.toDataURL('image/jpeg').split(',')[1];
-        const nickname = localStorage.getItem('username') || 'Guest';
+            let targetWidth, targetHeight;
 
-        const payload = {
-          nickname,
-          base64ImageData,
-        };
+            if (aspectRatio > 1) {
+                // 가로가 더 긴 경우
+                targetWidth = targetSize;
+                targetHeight = targetSize / aspectRatio;
+            } else {
+                // 세로가 더 긴 경우
+                targetHeight = targetSize;
+                targetWidth = targetSize * aspectRatio;
+            }
 
-        const response = await fetch('http://3.35.137.214:8080/images/edit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+            const resizedCanvas = document.createElement('canvas');
+            resizedCanvas.width = targetWidth;
+            resizedCanvas.height = targetHeight;
 
-        if (!response.ok) {
-          throw new Error('이미지를 업로드하는 중 오류가 발생했습니다.');
+            const resizedCtx = resizedCanvas.getContext('2d');
+
+            // 원본을 비율에 맞게 리사이즈
+            resizedCtx.drawImage(
+                canvas,
+                0, 0, originalWidth, originalHeight, // 원본 이미지 영역
+                0, 0, targetWidth, targetHeight // 비율에 맞는 대상 크기
+            );
+
+            // 최종 캔버스를 512x512로 중앙 정렬
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = targetSize;
+            finalCanvas.height = targetSize;
+
+            const finalCtx = finalCanvas.getContext('2d');
+
+            // 배경을 투명하게 초기화
+            finalCtx.clearRect(0, 0, targetSize, targetSize);
+
+            // 중앙 정렬
+            const offsetX = (targetSize - targetWidth) / 2;
+            const offsetY = (targetSize - targetHeight) / 2;
+
+            finalCtx.drawImage(
+                resizedCanvas,
+                offsetX, offsetY, targetWidth, targetHeight
+            );
+
+            // 고해상도로 데이터 URL 생성
+            const base64ImageData = finalCanvas.toDataURL('image/jpeg', 1.0).split(',')[1];
+            const nickname = localStorage.getItem('username') || 'Guest';
+
+            const payload = {
+                nickname,
+                base64ImageData,
+            };
+
+            const response = await fetch('http://34.47.70.206:8080/images/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error('이미지를 업로드하는 중 오류가 발생했습니다.');
+            }
+
+            const data = await response.json();
+            const { imageUrl, image } = data;
+
+            setSelectedImage(`data:image/jpeg;base64,${image}`);
+            sessionStorage.setItem('uploadedImagePath', imageUrl);
+
+            message.success('이미지가 성공적으로 업로드되었습니다.');
+
+            if (window.refresh) {
+                window.refresh();
+            }
+        } catch (error) {
+            console.error('서버 업로드 중 오류:', error);
+            message.error('이미지 업로드에 실패했습니다.');
         }
-
-        const data = await response.json();
-        const { imageUrl, image } = data;
-
-        // 서버에서 받은 이미지 URL을 저장 (선택된 이미지는 갱신하지 않음)
-        sessionStorage.setItem('uploadedImagePath', imageUrl);
-
-        message.success('이미지가 성공적으로 업로드되었습니다.');
-
-        if (window.refresh) {
-          window.refresh();  // 최신 이미지를 불러오기 위해 최근 이미지 목록 갱신
-        }
-      } catch (error) {
-        console.error('서버 업로드 중 오류:', error);
-        message.error('이미지 업로드에 실패했습니다.');
-      }
     }
   };
+
 
   const handleSendData = () => {
     sendAllData();
@@ -148,7 +196,7 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
             className="image-display"
             style={{
               position: 'relative',
-              height: '279px',
+              height: 'px',
               width: '300px',
               overflow: 'hidden',
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -156,12 +204,16 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'column',
+              margin: 0, 
+              padding: 0, 
+              background: 'White',
+              borderRadius: '0px'
             }}
           >
             {selectedImage ? (
-              <Image src={selectedImage} alt="선택된 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <Image src={selectedImage} alt="선택된 이미지" style={{ width: '100%', height: '100%' }} />
             ) : (
-              <Image alt="AI로 생성된 이미지" style={{ width: '100%', height: '100%' , objectFit: 'cover'}} />
+              <Image alt="AI로 생성된 이미지" style={{ width: '100%', height: '100%'}} />
             )}
             {isTextApplied && (
               <Draggable nodeRef={draggableRef} bounds="parent">
@@ -173,9 +225,10 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
                     color: fontColor,
                     fontSize: `${fontSize}px`,
                     borderRadius: '8px',
-                    background: backgroundColor,
+                    background: `rgba(${parseInt(backgroundColor.slice(1, 3), 16)}, ${parseInt(backgroundColor.slice(3, 5), 16)}, ${parseInt(backgroundColor.slice(5, 7), 16)}, ${backgroundOpacity})`,
                     padding: '2px',
-                    textShadow: `0px 0px 2px ${textShadowColor}`,
+                    textShadow: `0px 0px 4px ${textShadowColor}`,
+                    fontWeight: 'bold'
                   }}
                 >
                   {imageTextInput}
@@ -198,6 +251,8 @@ const ImageSection = ({ selectedImage, setSelectedImage, sendAllData }) => {
             setTextShadowColor={setTextShadowColor}
             handleRemoveBackground={handleRemoveBackground}
             applyTextStyle={applyTextStyle}
+            backgroundOpacity={backgroundOpacity}
+            setBackgroundOpacity={setBackgroundOpacity}
           />
         </Col>
       </Row>

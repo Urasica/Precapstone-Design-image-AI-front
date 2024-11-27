@@ -16,19 +16,19 @@ const MessageMain = () => {
   const [imageText, setImageText] = useState('');
   const [recentImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState('');
-  const savedImagePath = sessionStorage.getItem("selectedImagePath");
 
   const sendAllData = async () => {
     try {
       // 전화번호 포맷 정리
       const sanitizedSenderNumber = senderNumber.replace(/-/g, '');
       const sanitizedReceiverNumbers = receiverNumbers.map((num) => num.replace(/-/g, ''));
+      const savedImagePath = sessionStorage.getItem("selectedImagePath");
 
       const dataToSend = {
         content: messageContent,
         path: savedImagePath, // 경로 사용
         fromPhoneNumber: sanitizedSenderNumber,
-        toPhoneNumbers: sanitizedReceiverNumbers, // 배열로 처리
+        toPhoneNumbers: sanitizedReceiverNumbers, // 배열 처리
       };
       console.log("서버가 문자 보낼 데이터",dataToSend);
 
@@ -45,7 +45,7 @@ const MessageMain = () => {
       console.log('전달할 데이터:', dataToSend);
 
       // 서버로 데이터 전송
-      const response = await axios.post('http://3.35.137.214:8080/api/send', dataToSend);
+      const response = await axios.post('http://34.47.70.206:8080/api/send', dataToSend);
 
       message.success('모든 정보를 성공적으로 전송했습니다.');
       console.log('서버 응답:', response.data);

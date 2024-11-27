@@ -54,7 +54,7 @@ function HomePage({ setIsLoggedIn }) {
     console.log('전송 데이터:', loginData);
 
     try {
-      const response = await fetch('http://3.35.137.214:8080/api/auth/login', {
+      const response = await fetch('http://34.47.70.206:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

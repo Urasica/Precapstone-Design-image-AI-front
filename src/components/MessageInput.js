@@ -7,7 +7,6 @@ const { TextArea } = Input;
 const MessageInput = ({ messageContent, setMessageContent, prompt, setPrompt, setSelectedImage }) => {
   const [loading, setLoading] = useState(false);
 
-// MessageInput 컴포넌트
 const generateImage = async () => {
   setLoading(true);
   let loadingMessageShown = false;
@@ -37,8 +36,7 @@ const generateImage = async () => {
       prompt: prompt,
     };
 
-    // 서버 변경 필요
-    const response = await fetch("http://3.35.137.214:8080/images/generate", {
+    const response = await fetch("http://34.47.70.206:8080/images/generate", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

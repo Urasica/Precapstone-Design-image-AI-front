@@ -9,7 +9,7 @@ const Signup = () => {
   const handleSignup = async (values) => {
     console.log('보낼 데이터:', values);
     try {
-      const response = await fetch('http://3.35.137.214:8080/api/auth/signUp', {
+      const response = await fetch('http://34.47.70.206:8080/api/auth/signUp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

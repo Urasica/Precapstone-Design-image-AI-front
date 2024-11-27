@@ -5,30 +5,31 @@ const { TextArea } = Input;
 
 const InformationFields = ({ senderNumber, setSenderNumber, receiverNumbers, setReceiverNumbers }) => {
   const [receiverInput, setReceiverInput] = useState('');
-  const [isReceiverInputDisabled, setIsReceiverInputDisabled] = useState(false); // TextArea 비활성화 상태
+  const [isReceiverInputDisabled, setIsReceiverInputDisabled] = useState(false); 
 
-  // 수신 번호를 쉼표로 구분해 배열로 변환
+  
   const handleReceiverNumbersChange = (e) => {
-    setReceiverInput(e.target.value); // 입력값을 상태로 업데이트
+    setReceiverInput(e.target.value); 
   };
 
-  // 추가 버튼 클릭 시 수신 번호 목록에 추가 및 TextArea 비활성화
+  
   const handleAddReceiverNumber = () => {
     const newNumbers = receiverInput
       .split(',')
-      .map((num) => num.trim().replace(/-/g, '')) // 공백 제거하고 '-'를 없앰
-      .filter((num) => num !== '' && /^[0-9]+$/.test(num)); // 빈 문자열 및 숫자가 아닌 값 제거
+      .map((num) => num.trim().replace(/-/g, '')) 
+      .filter((num) => num !== '' && /^[0-9]+$/.test(num)); 
 
-    setReceiverNumbers(newNumbers); // 입력된 번호로 갱신
-    setReceiverInput(''); // 입력 필드 초기화
-    setIsReceiverInputDisabled(true); // TextArea 비활성화
+    setReceiverNumbers(newNumbers); 
+    console.log(newNumbers);
+    setReceiverInput(''); 
+    setIsReceiverInputDisabled(true); 
   };
 
-  // 수정 버튼 클릭 시 등록된 수신 번호 초기화하고 TextArea 활성화
+
   const handleEditReceiverNumbers = () => {
-    setReceiverNumbers([]); // 등록된 수신 번호 초기화
-    setReceiverInput(''); // TextArea 초기화
-    setIsReceiverInputDisabled(false); // TextArea 활성화
+    setReceiverNumbers([]); 
+    setReceiverInput(''); 
+    setIsReceiverInputDisabled(false); 
   };
 
   return (
@@ -46,13 +47,13 @@ const InformationFields = ({ senderNumber, setSenderNumber, receiverNumbers, set
             onChange={(e) => setSenderNumber(e.target.value)}
           />
         </Form.Item>
-        <Form.Item label={<span className="korean-font">수신 번호</span>} name="receiverNumbers">
+        <Form.Item label={<span className="korean-font">수신 번호</span>}>
           <TextArea
             style={{ height: '120px', resize: 'none' }}
             placeholder="수신 번호를 쉼표(,)로 구분하여 입력"
-            value={receiverInput} // `receiverInput`을 `value`로 사용
-            onChange={handleReceiverNumbersChange} // 입력 필드 변화 감지
-            disabled={isReceiverInputDisabled} // 추가 버튼 클릭 후 비활성화
+            value={receiverInput} 
+            onChange={handleReceiverNumbersChange} 
+            disabled={isReceiverInputDisabled} 
           />
         </Form.Item>
 
@@ -61,7 +62,7 @@ const InformationFields = ({ senderNumber, setSenderNumber, receiverNumbers, set
             <Button
               type="primary"
               block
-              onClick={handleAddReceiverNumber} // 추가 버튼 클릭 시
+              onClick={handleAddReceiverNumber} 
             >
               추가
             </Button>
@@ -70,7 +71,7 @@ const InformationFields = ({ senderNumber, setSenderNumber, receiverNumbers, set
             <Button
               type="default"
               block
-              onClick={handleEditReceiverNumbers} // 수정 버튼 클릭 시
+              onClick={handleEditReceiverNumbers} 
             >
               수정
             </Button>
